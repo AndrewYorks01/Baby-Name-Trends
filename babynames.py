@@ -17,11 +17,12 @@ the_states = ["AK", "AL", "AR", "AZ", "CA", "CO",
 all_states = []
 
 class state_data:
-    def __init__(self, state, name, births, percentage):
+    def __init__(self, state, name, births, percentage, relative):
         self.state = state
         self.name = name
         self.births = births
         self.percentage = percentage
+        self.relative = relative
 
     def __repr__(self):
         return f"State(name='{self.name}', births={self.births})"    
@@ -250,14 +251,16 @@ def bystate():
                         (temp_df['Sex'] == "M")]['Births'].sum()
 
                         perc = float(float(total_babies) / float(boys_count))*100
+                        total = temp_df.loc[(temp_df['Sex'] == "M") & (temp_df['Year'] == year), 'Births'].sum()
+                        relat = float(total_babies / total) * 100
 
-                        entry = state_data(state, my_name, total_babies, perc)
+                        entry = state_data(state, my_name, total_babies, perc, relat)
                         all_states.append(entry)
 
                         
                         final_df = pd.DataFrame([vars(s) for s in all_states]) 
-                        
-                    st.dataframe(final_df, hide_index=True)
+                    
+                    st.dataframe(final_df, hide_index=True, column_config={"name": None})
                                       
 
             elif (sex == "Female"):
@@ -276,14 +279,16 @@ def bystate():
                         (temp_df['Sex'] == "F")]['Births'].sum()
 
                         perc = float(float(total_babies) / float(girls_count))*100
+                        total = temp_df.loc[(temp_df['Sex'] == "F") & (temp_df['Year'] == year), 'Births'].sum()
+                        relat = float(total_babies / total) * 100
 
-                        entry = state_data(state, my_name, total_babies, perc)
+                        entry = state_data(state, my_name, total_babies, perc, relat)
                         all_states.append(entry)
 
                         
                         final_df = pd.DataFrame([vars(s) for s in all_states]) 
                         
-                    st.dataframe(final_df)
+                    st.dataframe(final_df, hide_index=True, column_config={"name": None})
 
         # shows message if data file doesn't exist
         except FileNotFoundError:
